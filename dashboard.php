@@ -15,16 +15,21 @@ requireLogin();
 // if ($_SESSION['role'] === 'admin') { ... }
 
 $user = getCurrentUser();
-if (!$user['store_id']) {
+if (!$user || !isset($user['store_id']) || !$user['store_id']) {
     header("Location: setup-store.php");
     exit();
 }
 
-$stats = getSellerStats($user['id']);
-$theme = getTheme($user['category']);
-$products = getStoreProducts($user['store_id']);
-$creditsLeft = ($user['credits_total'] ?? 50) - ($user['credits_used'] ?? 0);
-$csrf = generateCSRFToken();
+try {
+    $stats = getSellerStats($user['id']);
+    $theme = getTheme($user['category']);
+    $products = getStoreProducts($user['store_id']);
+    $creditsLeft = ($user['credits_total'] ?? 50) - ($user['credits_used'] ?? 0);
+    $csrf = generateCSRFToken();
+} catch (Exception $e) {
+    error_log("Dashboard Data Error: " . $e->getMessage());
+    die("Erreur de chargement des données. Veuillez vérifier que votre base de données est à jour (Tables inexistantes ?). Details: " . $e->getMessage());
+}
 ?>
 <!DOCTYPE html>
 <html lang="fr">

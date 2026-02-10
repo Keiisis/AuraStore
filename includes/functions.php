@@ -89,7 +89,7 @@ function uploadImage($file, $folder = 'products')
 function getStoreBySlug($slug)
 {
     $db = getDB();
-    $stmt = $db->prepare("SELECT s.*, u.full_name as owner_name FROM stores s JOIN users u ON s.user_id = u.id WHERE s.store_slug = ? AND s.is_active = 1");
+    $stmt = $db->prepare("SELECT s.*, u.full_name as owner_name FROM stores s JOIN users u ON s.user_id = u.id WHERE s.store_slug = ? AND s.is_active IS TRUE");
     $stmt->execute([$slug]);
     return $stmt->fetch(PDO::FETCH_ASSOC);
 }
@@ -103,8 +103,8 @@ function getStoreProducts($storeId, $limit = 100, $featuredOnly = false)
     $sql = "SELECT p.*, (SELECT COUNT(*) FROM tryon_sessions WHERE product_id=p.id) as total_tryons 
             FROM products p WHERE p.store_id = ?";
     if ($featuredOnly)
-        $sql .= " AND p.is_featured = 1";
-    $sql .= " AND p.is_active = 1 ORDER BY p.created_at DESC LIMIT ?";
+        $sql .= " AND p.is_featured IS TRUE";
+    $sql .= " AND p.is_active IS TRUE ORDER BY p.created_at DESC LIMIT ?";
 
     $stmt = $db->prepare($sql);
     $stmt->execute([$storeId, $limit]);
@@ -139,9 +139,15 @@ function getSellerStats($userId)
     $prodCount = $db->prepare("SELECT COUNT(*) FROM products WHERE store_id = ?");
     $prodCount->execute([$sid]);
 
-    // Try-on count
-    $tryonCount = $db->prepare("SELECT COUNT(*) FROM tryon_sessions WHERE store_id = ?");
-    $tryonCount->execute([$sid]);
+    // Try-on count (Safety Check)
+    $tcFetch = 0;
+    try {
+        $tryonCount = $db->prepare("SELECT COUNT(*) FROM tryon_sessions WHERE store_id = ?");
+        $tryonCount->execute([$sid]);
+        $tcFetch = (int) $tryonCount->fetchColumn();
+    } catch (Exception $e) {
+        $tcFetch = 0;
+    }
 
     // Orders
     $orders = $db->prepare("SELECT COUNT(*) as total, SUM(CASE WHEN status='confirmed' THEN 1 ELSE 0 END) as confirmed FROM orders WHERE store_id = ?");
@@ -149,22 +155,28 @@ function getSellerStats($userId)
     $orderData = $orders->fetch(PDO::FETCH_ASSOC);
 
     // Weekly tryons (Postgres Syntax)
-    $weekly = $db->prepare("
-        SELECT created_at::DATE as day, COUNT(*) as count 
-        FROM tryon_sessions 
-        WHERE store_id = ? 
-        AND created_at >= NOW() - INTERVAL '7 DAY' 
-        GROUP BY created_at::DATE 
-        ORDER BY day ASC
-    ");
-    $weekly->execute([$sid]);
+    $weeklyStats = [];
+    try {
+        $weekly = $db->prepare("
+            SELECT created_at::DATE as day, COUNT(*) as count 
+            FROM tryon_sessions 
+            WHERE store_id = ? 
+            AND created_at >= NOW() - INTERVAL '7 DAY' 
+            GROUP BY created_at::DATE 
+            ORDER BY day ASC
+        ");
+        $weekly->execute([$sid]);
+        $weeklyStats = $weekly->fetchAll(PDO::FETCH_ASSOC);
+    } catch (Exception $e) {
+        $weeklyStats = [];
+    }
 
     return [
         'views' => (int) ($storeData['total_views'] ?? 0),
-        'tryons' => (int) $tryonCount->fetchColumn(),
+        'tryons' => $tcFetch,
         'products' => (int) $prodCount->fetchColumn(),
         'orders' => $orderData,
-        'weekly_tryons' => $weekly->fetchAll(PDO::FETCH_ASSOC),
+        'weekly_tryons' => $weeklyStats,
         'store' => $storeData
     ];
 }
