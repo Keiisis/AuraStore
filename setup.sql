@@ -3,9 +3,8 @@
 -- Complete MySQL Setup
 -- ======================================
 
-CREATE DATABASE IF NOT EXISTS aurastore
-    CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-USE aurastore;
+-- Cloud Database compatibility: Removed CREATE DATABASE
+-- Just use the existing database selected in your connection
 
 -- Users: Admins + Sellers
 CREATE TABLE IF NOT EXISTS users (

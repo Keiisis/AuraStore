@@ -8,14 +8,39 @@ function getDB()
     static $pdo = null;
 
     if ($pdo === null) {
-        $host = getenv('DB_HOST') ?: 'localhost';
-        $dbname = getenv('DB_NAME') ?: 'aurastore';
-        $user = getenv('DB_USER') ?: 'root';
-        $pass = getenv('DB_PASS') ?: '';
-        $port = getenv('DB_PORT') ?: '3306';
-        $charset = 'utf8mb4';
+        $dbUrl = getenv('DATABASE_URL');
 
-        $dsn = "mysql:host=$host;port=$port;dbname=$dbname;charset=$charset";
+        if ($dbUrl) {
+            // Parse URL from Supabase/Vercel (e.g. postgres://user:pass@host:port/db)
+            $db = parse_url($dbUrl);
+
+            $host = $db['host'];
+            $port = $db['port'] ?? 5432;
+            $dbname = ltrim($db['path'], '/');
+            $user = $db['user'];
+            $pass = $db['pass'];
+
+            $dsn = "pgsql:host=$host;port=$port;dbname=$dbname";
+        } else {
+            // Local Fallback or Individual Vars
+            $host = getenv('DB_HOST') ?: '127.0.0.1';
+            $dbname = getenv('DB_NAME') ?: 'aurastore';
+            $user = getenv('DB_USER') ?: 'root';
+            $pass = getenv('DB_PASS') ?: '';
+            $port = getenv('DB_PORT') ?: '5432'; // Default Postgres port
+
+            // Check if we are running locally (likely MySQL) or Prod (Postgres) based on port/driver
+            // For this migration, we assume we want Postgres if vars are set, or default to MySQL locally if needed.
+            // But user asked for Supabase migration. Let's force pgsql or make it configurable.
+
+            $driver = getenv('DB_CONNECTION') ?: 'pgsql';
+
+            if ($driver === 'mysql') {
+                $dsn = "mysql:host=$host;port=$port;dbname=$dbname;charset=utf8mb4";
+            } else {
+                $dsn = "pgsql:host=$host;port=$port;dbname=$dbname";
+            }
+        }
 
         try {
             $pdo = new PDO($dsn, $user, $pass, [
@@ -24,7 +49,9 @@ function getDB()
                 PDO::ATTR_EMULATE_PREPARES => false,
             ]);
         } catch (PDOException $e) {
-            die("Erreur de connexion à la base de données. Vérifiez votre configuration.");
+            // Log error safely in production
+            error_log("DB Connection Error: " . $e->getMessage());
+            die("Erreur de connexion à la base de données (Supabase/SQL).");
         }
     }
 

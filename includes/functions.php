@@ -148,8 +148,15 @@ function getSellerStats($userId)
     $orders->execute([$sid]);
     $orderData = $orders->fetch(PDO::FETCH_ASSOC);
 
-    // Weekly tryons
-    $weekly = $db->prepare("SELECT DATE(created_at) as day, COUNT(*) as count FROM tryon_sessions WHERE store_id = ? AND created_at >= DATE_SUB(NOW(), INTERVAL 7 DAY) GROUP BY DATE(created_at) ORDER BY day ASC");
+    // Weekly tryons (Postgres Syntax)
+    $weekly = $db->prepare("
+        SELECT created_at::DATE as day, COUNT(*) as count 
+        FROM tryon_sessions 
+        WHERE store_id = ? 
+        AND created_at >= NOW() - INTERVAL '7 DAY' 
+        GROUP BY created_at::DATE 
+        ORDER BY day ASC
+    ");
     $weekly->execute([$sid]);
 
     return [
