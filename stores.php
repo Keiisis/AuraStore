@@ -3,8 +3,8 @@
  * AuraStore - Stores API
  * Create, update, and fetch store info
  */
-require_once __DIR__ . '/../includes/auth.php';
-require_once __DIR__ . '/../includes/functions.php';
+require_once 'includes/auth.php';
+require_once 'includes/functions.php';
 
 header('Content-Type: application/json');
 
@@ -87,7 +87,7 @@ switch ($action) {
         if (!empty($_SERVER['HTTP_ACCEPT']) && strpos($_SERVER['HTTP_ACCEPT'], 'application/json') !== false) {
             echo json_encode(['success' => true]);
         } else {
-            header("Location: ../dashboard.php");
+            header("Location: dashboard.php");
         }
         break;
 

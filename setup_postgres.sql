@@ -121,6 +121,21 @@ CREATE TABLE IF NOT EXISTS credits (
 
 CREATE INDEX IF NOT EXISTS idx_user_credits ON credits(user_id);
 
+-- Platform Settings (AI Config, etc.)
+CREATE TABLE IF NOT EXISTS platform_settings (
+    setting_key VARCHAR(50) PRIMARY KEY,
+    setting_value TEXT,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Insert initial AI settings
+INSERT INTO platform_settings (setting_key, setting_value) VALUES 
+('vto_provider', 'free'),
+('hf_space_url', 'https://yisol-idm-vton.hf.space/api/predict'),
+('fal_api_key', ''),
+('hf_token', '')
+ON CONFLICT (setting_key) DO NOTHING;
+
 -- Insert default admin (Password: admin123)
 -- In Postgres, we use ON CONFLICT DO NOTHING or UPDATE
 INSERT INTO users (full_name, email, password, role) 

@@ -3,8 +3,8 @@
  * AuraStore - Intelligent VTO Proxy
  * Automatically switches between Free (HuggingFace) and Pro (Fal.ai)
  */
-require_once '../includes/functions.php';
-// require_once '../includes/security.php'; // Temporary comment if security.php doesn't exist yet
+require_once 'includes/functions.php';
+require_once 'includes/security.php';
 
 header('Content-Type: application/json');
 

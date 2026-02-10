@@ -2,23 +2,26 @@
 /**
  * AuraStore - Admin Panel (Platform Owner)
  */
+require_once 'includes/security.php';
 require_once 'includes/auth.php';
 require_once 'includes/functions.php';
+initSecureSession();
+setSecurityHeaders();
 requireAdmin();
 
 $db = getDB();
 
 // Fetch all platform stats
 try {
-    $totalUsers = $db->query("SELECT COUNT(*) as c FROM users WHERE role='seller'")->fetch()['c'];
-    $totalStores = $db->query("SELECT COUNT(*) as c FROM stores")->fetch()['c'];
-    $totalProducts = $db->query("SELECT COUNT(*) as c FROM products")->fetch()['c'];
+    $totalUsers = $db->query("SELECT COUNT(*) as c FROM users WHERE role='seller'")->fetch()['c'] ?? 0;
+    $totalStores = $db->query("SELECT COUNT(*) as c FROM stores")->fetch()['c'] ?? 0;
+    $totalProducts = $db->query("SELECT COUNT(*) as c FROM products")->fetch()['c'] ?? 0;
 
-    // Check if table exists before query
+    // Check if table exists (Postgres compatible)
     $totalTryons = 0;
-    $checkTable = $db->query("SHOW TABLES LIKE 'tryon_sessions'")->fetch();
+    $checkTable = $db->query("SELECT EXISTS (SELECT FROM information_schema.tables WHERE table_name = 'tryon_sessions')")->fetchColumn();
     if ($checkTable) {
-        $totalTryons = $db->query("SELECT COUNT(*) as c FROM tryon_sessions")->fetch()['c'];
+        $totalTryons = $db->query("SELECT COUNT(*) as c FROM tryon_sessions")->fetch()['c'] ?? 0;
     }
 } catch (Exception $e) {
     $totalUsers = $totalStores = $totalProducts = $totalTryons = 0;
@@ -45,6 +48,7 @@ try {
 
 // Handle Settings Save
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_ai_config'])) {
+    validateCSRF();
     $provider = $_POST['vto_provider'] ?? 'free';
     $key = $_POST['fal_api_key'] ?? '';
     $hfUrl = $_POST['hf_space_url'] ?? 'https://yisol-idm-vton.hf.space/api/predict';
@@ -312,6 +316,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_ai_config'])) {
                 <?php endif; ?>
 
                 <form id="aiConfigForm" method="POST">
+                    <?php echo csrfField(); ?>
                     <input type="hidden" name="save_ai_config" value="1">
                     <div style="margin-bottom: 30px;">
                         <label style="display: block; margin-bottom: 15px; opacity: 0.6; font-weight: 600;">Moteur
@@ -435,17 +440,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_ai_config'])) {
         if (aiForm) {
             const falSec = document.getElementById('falKeySection');
 
-            document.getElementById('aiConfigForm').addEventListener('change', f unction(e) {
+            document.getElementById('aiConfigForm').addEventListener('change', function(e) {
                 if(e.target.name === 'vto_provider') {
-                const isFal = e.target.value === 'fal';
-                document.getElementById('falKeySection').style.display = isFal ? 'block' : 'none';
-                document.getElementById('hfConfigSection').style.display = isFal ? 'none' : 'block';
-            }
-        });
-        aiForm.onsubmit = (e) => {
-            e.preventDefault();
-            alert("Configuration Aura Magic enregistrée ! ✅");
-        }; }
+                    const isFal = e.target.value === 'fal';
+                    document.getElementById('falKeySection').style.display = isFal ? 'block' : 'none';
+                    document.getElementById('hfConfigSection').style.display = isFal ? 'none' : 'block';
+                }
+            });
+        }
     </script>
 </body>
 
