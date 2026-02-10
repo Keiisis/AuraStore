@@ -1,0 +1,7 @@
+{
+    "name": "aura-store",
+    "description": "Premium Store with AI VTO",
+    "require": {
+        "php": ">=8.1"
+    }
+}
