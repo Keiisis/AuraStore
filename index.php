@@ -5,17 +5,26 @@
 require_once 'includes/functions.php';
 require_once 'config/database.php';
 
-$db = getDB();
-
-// Fetch Dynamic Content (CMS)
-$cmsRaw = $db->query("SELECT * FROM landing_settings")->fetchAll();
+$db = null;
 $cms = [];
-foreach ($cmsRaw as $row) {
-    $cms[$row['setting_key']] = $row['setting_value'];
-}
+$plans = [];
 
-// Fetch Plans
-$plans = $db->query("SELECT * FROM pricing_plans WHERE is_active IS TRUE ORDER BY price_xaf ASC")->fetchAll();
+try {
+    $db = getDB();
+
+    // Fetch Dynamic Content (CMS)
+    $cmsRaw = $db->query("SELECT * FROM landing_settings")->fetchAll();
+    foreach ($cmsRaw as $row) {
+        $cms[$row['setting_key']] = $row['setting_value'];
+    }
+
+    // Fetch Plans
+    $plans = $db->query("SELECT * FROM pricing_plans WHERE is_active IS TRUE ORDER BY price_xaf ASC")->fetchAll();
+
+} catch (Exception $e) {
+    // If DB is not ready or tables missing, we use defaults without crashing
+    error_log("Landing Page DB Error: " . $e->getMessage());
+}
 
 // Default Fallbacks
 $title = $cms['hero_title'] ?? 'Votre boutique.<br><span class="gradient-text">Propulsée par l\'IA.</span>';
@@ -111,7 +120,8 @@ $primary = $cms['primary_color'] ?? '#FE7501';
                             <span class="plan-name"><?php echo htmlspecialchars($p['name']); ?></span>
                             <div class="plan-price">
                                 <?php echo $p['price_xaf'] > 0 ? number_format($p['price_xaf']) : '0'; ?> <span>XAF /
-                                    mois</span></div>
+                                    mois</span>
+                            </div>
                         </div>
                         <ul class="plan-features">
                             <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#00FF94"
