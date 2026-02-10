@@ -6,6 +6,7 @@
 require_once 'includes/security.php';
 require_once 'includes/auth.php';
 require_once 'includes/functions.php';
+require_once 'includes/ai_assistant.php';
 initSecureSession();
 setSecurityHeaders();
 requireLogin();
@@ -292,6 +293,28 @@ try {
                         value="<?php echo htmlspecialchars($stats['store']['whatsapp_number'] ?? ''); ?>">
                 </div>
                 <div class="form-group">
+                    <label for="cur"><i data-lucide="coins" class="icon"></i> Devise de la boutique</label>
+                    <select id="cur" name="currency" style="width:100%; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); color:white; padding:12px; border-radius:8px;">
+                        <option value="XAF" <?php echo ($user['currency'] ?? 'XAF') === 'XAF' ? 'selected' : ''; ?>>XAF (FCFA)</option>
+                        <option value="EUR" <?php echo ($user['currency'] ?? '') === 'EUR' ? 'selected' : ''; ?>>EUR (€)</option>
+                        <option value="USD" <?php echo ($user['currency'] ?? '') === 'USD' ? 'selected' : ''; ?>>USD ($)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label><i data-lucide="credit-card" class="icon"></i> Méthodes de paiement acceptées</label>
+                    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-top:10px;">
+                        <label style="font-size:0.8rem; display:flex; align-items:center; gap:8px;">
+                            <input type="checkbox" name="pay_stripe" checked> Stripe (Cartes)
+                        </label>
+                        <label style="font-size:0.8rem; display:flex; align-items:center; gap:8px;">
+                            <input type="checkbox" name="pay_momo" checked> Mobile Money (MTN/MOOV)
+                        </label>
+                        <label style="font-size:0.8rem; display:flex; align-items:center; gap:8px;">
+                            <input type="checkbox" name="pay_flutter" checked> Flutterwave
+                        </label>
+                    </div>
+                </div>
+                <div class="form-group">
                     <label><i data-lucide="link" class="icon"></i> Lien de votre boutique</label>
                     <div class="link-preview">
                         <span id="storeUrl"><?php echo 'store.php?s=' . $user['store_slug']; ?></span>
@@ -353,14 +376,28 @@ try {
                     </div>
                 </div>
                 <div class="form-group">
-                    <label><i data-lucide="image" class="icon"></i> Image principale</label>
-                    <div class="file-drop" id="fileDrop">
-                        <i data-lucide="upload-cloud" class="icon upload-icon"></i>
-                        <p>Glissez une image ou <span class="file-link">parcourez</span></p>
-                        <input type="file" name="image" accept="image/jpeg,image/png,image/webp" class="file-input"
-                            id="fileInput">
+                    <label><i data-lucide="images" class="icon"></i> Photos du produit (Max 3)</label>
+                    <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:10px; margin-top:10px;">
+                        <div class="mini-upload">
+                            <label style="font-size:0.7rem; opacity:0.6; display:block; margin-bottom:5px;">Photo 1 (Principale)</label>
+                            <input type="file" name="image" id="img1" accept="image/*" class="mini-file-input">
+                            <div class="vto-sel"><input type="radio" name="vto_target_image" value="1" checked> VTO</div>
+                        </div>
+                        <div class="mini-upload">
+                            <label style="font-size:0.7rem; opacity:0.6; display:block; margin-bottom:5px;">Photo 2</label>
+                            <input type="file" name="image_2" id="img2" accept="image/*" class="mini-file-input">
+                            <div class="vto-sel"><input type="radio" name="vto_target_image" value="2"> VTO</div>
+                        </div>
+                        <div class="mini-upload">
+                            <label style="font-size:0.7rem; opacity:0.6; display:block; margin-bottom:5px;">Photo 3</label>
+                            <input type="file" name="image_3" id="img3" accept="image/*" class="mini-file-input">
+                            <div class="vto-sel"><input type="radio" name="vto_target_image" value="3"> VTO</div>
+                        </div>
                     </div>
-                    <div class="file-preview" id="filePreview" style="display:none;"></div>
+                    <style>
+                        .mini-file-input { width:100%; font-size:0.6rem; background:rgba(255,255,255,0.05); padding:5px; border-radius:4px; }
+                        .vto-sel { font-size:0.6rem; margin-top:5px; color:#FE7501; font-weight:700; }
+                    </style>
                 </div>
                 <div class="form-group checkbox-group">
                     <label><input type="checkbox" name="is_featured"> <i data-lucide="star" class="icon"></i> Mettre en
@@ -458,15 +495,29 @@ try {
                         responsive: true,
                         maintainAspectRatio: false,
                         plugins: { legend: { display: false } },
-                        scales: {
-                            y: { display: false },
-                            x: { grid: { display: false }, ticks: { color: 'rgba(255,255,255,0.4)', font: { family: 'DM Sans' } } }
+                                        pointBackgroundColor: '#FFE946',
+                                        pointBorderColor: '#FE7501',
+                                        pointRadius: 5,
+                                        borderWidth: 2.5
+                                    }]
+                                },
+                                options: {
+                                    responsive: true,
+                                    maintainAspectRatio: false,
+                                    plugins: { legend: { display: false } },
+                                    scales: {
+                                        y: { display: false },
+                                        x: { grid: { display: false }, ticks: { color: 'rgba(255,255,255,0.4)', font: { family: 'DM Sans' } } }
+                                    }
+                                }
+                            });
+                        } catch(e) {
+                            console.error(e);
                         }
                     }
                 });
-            }
-        });
     </script>
+    <?php renderAuraAssistant('seller'); ?>
 </body>
 
 </html>

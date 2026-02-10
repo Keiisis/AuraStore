@@ -59,7 +59,7 @@ $whatsapp = preg_replace('/[^0-9]/', '', $store['whatsapp_number']);
             --bg:
                 <?php echo $theme['bg']; ?>
             ;
-            --font: '<?php echo $theme['font']; ?>', 'Inter', sans-serif;
+            --font: '<?php echo $theme['font']; ?>', sans-serif;
             --grad: linear-gradient(135deg, var(--p), var(--s));
         }
 
@@ -70,10 +70,12 @@ $whatsapp = preg_replace('/[^0-9]/', '', $store['whatsapp_number']);
         }
 
         body {
-            background: var(--bg);
+            background-color: var(--bg);
+            background-size: 60px 60px;
             color: white;
             font-family: var(--font);
             overflow-x: hidden;
+            line-height: 1.6;
         }
 
         .glass {
@@ -85,15 +87,24 @@ $whatsapp = preg_replace('/[^0-9]/', '', $store['whatsapp_number']);
 
         /* Header */
         .store-header {
-            padding: 25px 5%;
+            padding: 16px 5%;
             display: flex;
             justify-content: space-between;
             align-items: center;
             position: sticky;
             top: 0;
-            z-index: 100;
-            background: rgba(0, 0, 0, 0.85);
-            backdrop-filter: blur(15px);
+            z-index: 1000;
+            background: rgba(var(--bg), 0.7);
+            backdrop-filter: blur(20px) saturate(180%);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .store-header.scrolled {
+            padding: 12px 5%;
+            background: rgba(var(--bg), 0.9);
+            border-bottom-color: var(--p);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
         }
 
         .store-brand {
@@ -123,8 +134,23 @@ $whatsapp = preg_replace('/[^0-9]/', '', $store['whatsapp_number']);
 
         .store-nav {
             display: flex;
-            gap: 25px;
+            gap: 15px;
             align-items: center;
+            flex-wrap: nowrap;
+        }
+
+        @media (max-width: 400px) {
+            .store-nav {
+                gap: 8px;
+            }
+
+            .store-nav a {
+                font-size: 0.75rem;
+            }
+
+            .whatsapp-btn {
+                padding: 8px 15px !important;
+            }
         }
 
         .store-nav a {
@@ -172,22 +198,43 @@ $whatsapp = preg_replace('/[^0-9]/', '', $store['whatsapp_number']);
 
         .hero-blob {
             position: absolute;
-            width: 600px;
-            height: 600px;
-            background: var(--grad);
-            filter: blur(120px);
-            opacity: 0.25;
+            width: 500px;
+            height: 500px;
+            background: var(--p);
+            filter: blur(100px);
+            opacity: 0.15;
             border-radius: 50%;
-            animation: float 12s ease-in-out infinite alternate;
+            z-index: 1;
+        }
+
+        .blob-1 {
+            top: -100px;
+            left: -100px;
+            animation: float 20s ease-in-out infinite alternate;
+        }
+
+        .blob-2 {
+            bottom: -200px;
+            right: -100px;
+            background: var(--s);
+            animation: float 25s ease-in-out infinite alternate-reverse;
         }
 
         @keyframes float {
-            from {
-                transform: translate(-20%, -10%) scale(1);
+            0% {
+                transform: translate(0, 0) scale(1) rotate(0deg);
             }
 
-            to {
-                transform: translate(20%, 10%) scale(1.3);
+            33% {
+                transform: translate(30px, -50px) scale(1.1) rotate(10deg);
+            }
+
+            66% {
+                transform: translate(-20px, 20px) scale(0.9) rotate(-5deg);
+            }
+
+            100% {
+                transform: translate(0, 0) scale(1) rotate(0deg);
             }
         }
 
@@ -367,8 +414,8 @@ $whatsapp = preg_replace('/[^0-9]/', '', $store['whatsapp_number']);
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.85);
-            backdrop-filter: blur(15px);
+            background: rgba(0, 0, 0, 0.9);
+            backdrop-filter: blur(25px);
             display: none;
             align-items: center;
             justify-content: center;
@@ -383,13 +430,26 @@ $whatsapp = preg_replace('/[^0-9]/', '', $store['whatsapp_number']);
         .vto-modal {
             width: 100%;
             max-width: 520px;
-            background: rgba(15, 12, 10, 0.85);
-            border: 1px solid rgba(254, 117, 1, 0.15);
-            border-radius: 32px;
+            background: rgba(15, 12, 10, 0.9);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 40px;
             padding: 48px 32px;
             position: relative;
-            box-shadow: 0 40px 100px rgba(0, 0, 0, 0.6);
+            box-shadow: 0 40px 100px rgba(0, 0, 0, 0.8);
             overflow: hidden;
+            animation: modalPop 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @keyframes modalPop {
+            from {
+                opacity: 0;
+                transform: scale(0.9) translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
         }
 
         .vto-close {
@@ -567,8 +627,18 @@ $whatsapp = preg_replace('/[^0-9]/', '', $store['whatsapp_number']);
         /* Responsive */
         @media (max-width: 768px) {
             .store-header {
-                flex-direction: column;
-                gap: 15px;
+                padding: 12px 5%;
+                flex-direction: row;
+                gap: 10px;
+                justify-content: space-between;
+            }
+
+            .store-brand h1 {
+                font-size: 1.1rem;
+            }
+
+            .powered {
+                display: none;
             }
 
             .product-grid {
@@ -576,28 +646,149 @@ $whatsapp = preg_replace('/[^0-9]/', '', $store['whatsapp_number']);
                 gap: 15px;
             }
 
+            .store-hero {
+                height: 45vh;
+                padding: 0 5%;
+            }
+
             .store-hero h2 {
                 font-size: 2.2rem;
             }
 
+            .product-info {
+                padding: 16px;
+            }
+
+            .product-price {
+                font-size: 1.1rem;
+            }
+
+            .product-actions {
+                grid-template-columns: 1fr;
+                gap: 10px;
+            }
+
+            .main-buy-btn {
+                padding: 14px;
+                font-size: 0.85rem;
+            }
+
+            .secondary-action {
+                padding: 10px;
+                font-size: 0.75rem;
+            }
+
             .vto-modal {
-                padding: 30px;
+                padding: 32px 20px;
+                border-radius: 30px;
+                width: 95%;
             }
 
             .upload-zone {
-                padding: 30px;
+                padding: 40px 20px;
+            }
+
+            .featured-badge,
+            .like-btn {
+                top: 15px;
+                left: 15px;
+            }
+
+            .like-btn {
+                right: 15px;
+                left: auto;
+                width: 38px;
+                height: 38px;
             }
         }
 
         @media (max-width: 480px) {
             .product-grid {
                 grid-template-columns: 1fr;
+                /* Single column on very small screens for better readability */
+                gap: 20px;
+            }
+
+            .store-header {
+                padding: 10px 4%;
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 15px;
+            }
+
+            .store-nav {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .whatsapp-btn {
+                padding: 8px 16px;
+                font-size: 0.8rem;
+            }
+
+            .vto-modal {
+                padding: 24px 16px;
+                border-radius: 24px;
             }
         }
     </style>
 </head>
 
 <body>
+    <div class="noise" aria-hidden="true"></div>
+
+    <!-- ═══ CHECKOUT MODAL (CHIC) ═══ -->
+    <div id="checkout-modal" class="vto-modal-overlay">
+        <div class="vto-modal glass">
+            <button class="vto-close" onclick="closeCheckout()">&times;</button>
+            <div id="receipt-area">
+                <div class="chk-receipt-header">
+                    <div class="chk-brand">AURASTORE SECURE TRANSACTION</div>
+                    <h3 id="chk-name" class="chk-product-title">Produit</h3>
+                    <div id="chk-price" class="chk-product-price">0 FCFA</div>
+                    <div class="chk-divider"></div>
+                </div>
+
+                <div style="margin-bottom:32px;">
+                    <p class="chk-secure-footer">
+                        <span>🛡️</span> Mode de paiement sécurisé
+                    </p>
+                    <div class="pay-methods">
+                        <div class="pay-opt pay-whatsapp active" onclick="selPay('whatsapp', this)">
+                            <div class="pay-opt-name">WhatsApp</div>
+                            <div class="pay-opt-desc">Validation Directe</div>
+                        </div>
+                        <div class="pay-opt pay-momo" onclick="selPay('momo', this)">
+                            <div class="pay-opt-name">M-Money</div>
+                            <div class="pay-opt-desc">MTN / Moov</div>
+                        </div>
+                        <div class="pay-opt pay-stripe" onclick="selPay('stripe', this)">
+                            <div class="pay-opt-name">Carte / Visa</div>
+                            <div class="pay-opt-desc">International</div>
+                        </div>
+                        <div class="pay-opt pay-kkiapay" onclick="selPay('kkiapay', this)">
+                            <div class="pay-opt-name">KKIAPAY</div>
+                            <div class="pay-opt-desc">UEMOA Region</div>
+                        </div>
+                    </div>
+                </div>
+
+                <button id="final-checkout" class="btn-order-look"
+                    style="width:100%; border-radius:20px; font-size:1.1rem; padding: 22px;">
+                    Confirmer & Payer
+                </button>
+
+                <button onclick="captureReceipt()"
+                    style="margin-top:15px; background:none; border:1px solid rgba(255,255,255,0.1); color:rgba(255,255,255,0.4); padding:12px; border-radius:15px; width:100%; cursor:pointer; font-size:0.75rem; transition: 0.3s;">
+                    📸 Enregistrer le reçu (Capture)
+                </button>
+
+                <p style="font-size: 0.75rem; opacity: 0.4; text-align: center; margin-top: 24px;">
+                    🔐 Cryptage de bout en bout — Pas de frais cachés
+                </p>
+            </div>
+        </div>
+    </div>
 
     <!-- Store Header -->
     <header class="store-header">
@@ -620,13 +811,16 @@ $whatsapp = preg_replace('/[^0-9]/', '', $store['whatsapp_number']);
 
     <!-- Hero -->
     <section class="store-hero">
-        <div class="hero-blob"></div>
-        <h2>
-            <?php echo htmlspecialchars($store['store_name']); ?>
-        </h2>
-        <p>
-            <?php echo htmlspecialchars($store['description'] ?? 'Bienvenue dans notre boutique. Explorez, essayez, commandez.'); ?>
-        </p>
+        <div class="hero-blob blob-1"></div>
+        <div class="hero-blob blob-2"></div>
+        <div class="hero-content reveal">
+            <h2>
+                <?php echo htmlspecialchars($store['store_name']); ?>
+            </h2>
+            <p>
+                <?php echo htmlspecialchars($store['description'] ?? 'Bienvenue dans notre boutique. Explorez, essayez, commandez.'); ?>
+            </p>
+        </div>
     </section>
 
     <!-- Featured Products -->
@@ -635,7 +829,7 @@ $whatsapp = preg_replace('/[^0-9]/', '', $store['whatsapp_number']);
             <div class="section-title"><span></span> EN VEDETTE</div>
             <div class="product-grid">
                 <?php foreach ($featured as $p): ?>
-                    <div class="product-card glass reveal">
+                    <div class="product-card reveal">
                         <div class="product-card-inner">
                             <div class="featured-badge">★ VEDETTE</div>
                             <button class="like-btn" onclick="toggleLike(this)">♡</button>
@@ -643,27 +837,27 @@ $whatsapp = preg_replace('/[^0-9]/', '', $store['whatsapp_number']);
                                 class="product-img" alt="<?php echo htmlspecialchars($p['name']); ?>">
                         </div>
                         <div class="product-info">
-                            <h3>
-                                <?php echo htmlspecialchars($p['name']); ?>
-                            </h3>
-                            <div>
-                                <span class="product-price">
-                                    <?php echo formatPrice($p['price']); ?>
-                                </span>
+                            <h3><?php echo htmlspecialchars($p['name']); ?></h3>
+                            <div class="product-pricing">
+                                <span class="product-price"><?php echo formatPrice($p['price']); ?></span>
                                 <?php if ($p['old_price']): ?>
-                                    <span class="product-old-price">
-                                        <?php echo formatPrice($p['old_price']); ?>
-                                    </span>
+                                    <span class="product-old-price"><?php echo formatPrice($p['old_price']); ?></span>
                                 <?php endif; ?>
                             </div>
+
+                            <button class="main-buy-btn" onclick='openCheckout(<?php echo json_encode($p); ?>)'>
+                                🛒 Acheter cet article
+                            </button>
+
                             <div class="product-actions">
-                                <?php if (true): // Force for test ?>
-                                    <button class="try-on-btn"
-                                        onclick="openVTO(<?php echo $p['id']; ?>, '<?php echo htmlspecialchars(addslashes($p['name'])); ?>', <?php echo $p['price']; ?>, '<?php echo htmlspecialchars($p['image_url']); ?>')">✨
-                                        Essayer</button>
-                                <?php endif; ?>
-                                <button class="order-btn"
-                                    onclick="orderWhatsApp(<?php echo $p['id']; ?>, '<?php echo htmlspecialchars(addslashes($p['name'])); ?>', <?php echo $p['price']; ?>)">Commander</button>
+                                <button class="secondary-action action-vto"
+                                    onclick="openVTO(<?php echo $p['id']; ?>, '<?php echo htmlspecialchars(addslashes($p['name'])); ?>', <?php echo $p['price']; ?>, '<?php echo htmlspecialchars($p['image_url']); ?>', <?php echo $p['vto_target_image'] ?? 1; ?>, '<?php echo htmlspecialchars($p['image_2_url'] ?? ''); ?>', '<?php echo htmlspecialchars($p['image_3_url'] ?? ''); ?>')">
+                                    ✨ Essayer
+                                </button>
+                                <button class="secondary-action action-whatsapp"
+                                    onclick="orderWhatsApp(<?php echo $p['id']; ?>, '<?php echo htmlspecialchars(addslashes($p['name'])); ?>', <?php echo $p['price']; ?>)">
+                                    💬 Direct WhatsApp
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -683,34 +877,34 @@ $whatsapp = preg_replace('/[^0-9]/', '', $store['whatsapp_number']);
         <?php else: ?>
             <div class="product-grid">
                 <?php foreach ($products as $p): ?>
-                    <div class="product-card glass reveal">
+                    <div class="product-card reveal">
                         <div class="product-card-inner">
                             <button class="like-btn" onclick="toggleLike(this)">♡</button>
                             <img src="<?php echo $p['image_url'] ?: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&q=80&w=400'; ?>"
                                 class="product-img" alt="<?php echo htmlspecialchars($p['name']); ?>" loading="lazy">
                         </div>
                         <div class="product-info">
-                            <h3>
-                                <?php echo htmlspecialchars($p['name']); ?>
-                            </h3>
-                            <div>
-                                <span class="product-price">
-                                    <?php echo formatPrice($p['price']); ?>
-                                </span>
+                            <h3><?php echo htmlspecialchars($p['name']); ?></h3>
+                            <div class="product-pricing">
+                                <span class="product-price"><?php echo formatPrice($p['price']); ?></span>
                                 <?php if ($p['old_price']): ?>
-                                    <span class="product-old-price">
-                                        <?php echo formatPrice($p['old_price']); ?>
-                                    </span>
+                                    <span class="product-old-price"><?php echo formatPrice($p['old_price']); ?></span>
                                 <?php endif; ?>
                             </div>
+
+                            <button class="main-buy-btn" onclick='openCheckout(<?php echo json_encode($p); ?>)'>
+                                🛒 Acheter cet article
+                            </button>
+
                             <div class="product-actions">
-                                <?php if (true): // Force show for tests ?>
-                                    <button class="try-on-btn"
-                                        onclick="openVTO(<?php echo $p['id']; ?>, '<?php echo htmlspecialchars(addslashes($p['name'])); ?>', <?php echo $p['price']; ?>, '<?php echo htmlspecialchars($p['image_url']); ?>')">✨
-                                        Essayer</button>
-                                <?php endif; ?>
-                                <button class="order-btn"
-                                    onclick="orderWhatsApp(<?php echo $p['id']; ?>, '<?php echo htmlspecialchars(addslashes($p['name'])); ?>', <?php echo $p['price']; ?>)">Commander</button>
+                                <button class="secondary-action action-vto"
+                                    onclick="openVTO(<?php echo $p['id']; ?>, '<?php echo htmlspecialchars(addslashes($p['name'])); ?>', <?php echo $p['price']; ?>, '<?php echo htmlspecialchars($p['image_url']); ?>', <?php echo $p['vto_target_image'] ?? 1; ?>, '<?php echo htmlspecialchars($p['image_2_url'] ?? ''); ?>', '<?php echo htmlspecialchars($p['image_3_url'] ?? ''); ?>')">
+                                    ✨ Essayer
+                                </button>
+                                <button class="secondary-action action-whatsapp"
+                                    onclick="orderWhatsApp(<?php echo $p['id']; ?>, '<?php echo htmlspecialchars(addslashes($p['name'])); ?>', <?php echo $p['price']; ?>)">
+                                    💬 Direct WhatsApp
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -775,6 +969,16 @@ $whatsapp = preg_replace('/[^0-9]/', '', $store['whatsapp_number']);
     <script>
         const WHATSAPP = '<?php echo $whatsapp; ?>';
 
+        // Header Scroll Effect
+        window.addEventListener('scroll', () => {
+            const header = document.querySelector('.store-header');
+            if (window.scrollY > 50) {
+                header.classList.add('scrolled');
+            } else {
+                header.classList.remove('scrolled');
+            }
+        });
+
         // GSAP Scroll Reveals
         gsap.registerPlugin(ScrollTrigger);
         document.querySelectorAll('.reveal').forEach(el => {
@@ -790,8 +994,16 @@ $whatsapp = preg_replace('/[^0-9]/', '', $store['whatsapp_number']);
         // VTO Modal
         let currentVTOProduct = null;
 
-        function openVTO(productId, productName, productPrice, productImg) {
-            currentVTOProduct = { id: productId, name: productName, price: productPrice, image: productImg };
+        function openVTO(productId, productName, productPrice, productImg, vtoTargetImage, image2Url, image3Url) {
+            currentVTOProduct = {
+                id: productId,
+                name: productName,
+                price: productPrice,
+                image: productImg,
+                vto_target_image: vtoTargetImage,
+                image_2_url: image2Url,
+                image_3_url: image3Url
+            };
             document.getElementById('vtoModal').classList.add('active');
             resetVTO();
         }
@@ -846,12 +1058,17 @@ $whatsapp = preg_replace('/[^0-9]/', '', $store['whatsapp_number']);
                 reader.onload = async function () {
                     const base64Image = reader.result;
 
+                    // Determine VTO Image
+                    let targetImg = currentVTOProduct.image;
+                    if (currentVTOProduct.vto_target_image == 2) targetImg = currentVTOProduct.image_2_url;
+                    if (currentVTOProduct.vto_target_image == 3) targetImg = currentVTOProduct.image_3_url;
+
                     // Call our Proxy API with REAL data
-                    const response = await fetch('api/tryon.php', {
+                    const response = await fetch('tryon.php', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({
-                            product_image: currentVTOProduct.image,
+                            product_image: targetImg,
                             user_image: base64Image
                         })
                     });
@@ -894,10 +1111,13 @@ $whatsapp = preg_replace('/[^0-9]/', '', $store['whatsapp_number']);
 
         // WhatsApp Order
         function orderWhatsApp(id, name, price) {
+            const currency = "<?php echo $store['currency'] ?? 'XAF'; ?>";
+            const sym = currency === 'XAF' ? 'FCFA' : (currency === 'EUR' ? '€' : '$');
+
             const msg = encodeURIComponent(
-                `Bonjour ! Je souhaite commander :\n\n` +
-                `📦 ${name}\n` +
-                `💰 Prix : ${price} €\n\n` +
+                `Bonjour ! 👋 Je souhaite commander :\n\n` +
+                `📦 *${name}*\n` +
+                `💰 *Prix :* ${price} ${sym}\n\n` +
                 `Merci de me confirmer la disponibilité.`
             );
             window.open(`https://wa.me/${WHATSAPP}?text=${msg}`, '_blank');
@@ -908,7 +1128,73 @@ $whatsapp = preg_replace('/[^0-9]/', '', $store['whatsapp_number']);
             btn.classList.toggle('liked');
             btn.textContent = btn.classList.contains('liked') ? '♥' : '♡';
         }
+        // --- CHECKOUT LOGIC ---
+        let selectedPay = 'whatsapp';
+        let currentP = null;
+
+        window.openCheckout = (p) => {
+            currentP = p;
+            document.getElementById('chk-name').innerText = p.name;
+            const sym = "<?php echo $store['currency'] === 'XAF' ? 'FCFA' : ($store['currency'] === 'EUR' ? '€' : '$'); ?>";
+            document.getElementById('chk-price').innerText = `${new Intl.NumberFormat().format(p.price)} ${sym}`;
+            document.getElementById('checkout-modal').classList.add('active');
+        };
+
+        window.closeCheckout = () => {
+            document.getElementById('checkout-modal').classList.remove('active');
+        };
+
+        window.selPay = (method, el) => {
+            selectedPay = method;
+            document.querySelectorAll('.pay-opt').forEach(o => {
+                o.classList.remove('active');
+            });
+            el.classList.add('active');
+        };
+
+        document.getElementById('final-checkout').onclick = () => {
+            const baseUrl = 'checkout.php';
+            const params = new URLSearchParams({
+                p: currentP.id,
+                m: selectedPay,
+                s: "<?php echo $store['slug']; ?>"
+            });
+            window.location.href = `${baseUrl}?${params.toString()}`;
+        };
+
+        // --- RECEIPT CAPTURE ---
+        window.captureReceipt = async () => {
+            const btn = event.currentTarget;
+            btn.innerHTML = "⏳ Génération...";
+
+            // Load html2canvas dynamically
+            if (!window.html2canvas) {
+                const script = document.createElement('script');
+                script.src = "https://html2canvas.hertzen.com/dist/html2canvas.min.js";
+                document.head.appendChild(script);
+                await new Promise(r => script.onload = r);
+            }
+
+            const area = document.getElementById('receipt-area');
+            html2canvas(area, {
+                backgroundColor: '#0f0f12',
+                scale: 2,
+                logging: false
+            }).then(canvas => {
+                const link = document.createElement('a');
+                link.download = `recu-aura-${currentP.id}.png`;
+                link.href = canvas.toDataURL();
+                link.click();
+                btn.innerHTML = "✅ Reçu enregistré !";
+                setTimeout(() => btn.innerHTML = "📸 Prendre un reçu (Capture)", 3000);
+            });
+        };
+
     </script>
+    <?php
+    require_once 'includes/ai_assistant.php';
+    renderAuraAssistant('default');
+    ?>
 </body>
 
 </html>

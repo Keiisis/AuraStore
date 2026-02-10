@@ -58,6 +58,7 @@ CREATE TABLE IF NOT EXISTS products (
     colors VARCHAR(200),
     stock INT DEFAULT 0,
     vto_enabled BOOLEAN DEFAULT TRUE,
+    vto_target_image INT DEFAULT 1, -- Path to use for VTO (1, 2, or 3)
     is_featured BOOLEAN DEFAULT FALSE,
     is_active BOOLEAN DEFAULT TRUE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -118,17 +119,66 @@ CREATE TABLE IF NOT EXISTS credits (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
-
 CREATE INDEX IF NOT EXISTS idx_user_credits ON credits(user_id);
 
--- Platform Settings (AI Config, etc.)
+-- ═══ NEW: PRICING PLANS (Dynamic Stack) ═══
+CREATE TABLE IF NOT EXISTS pricing_plans (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(50) NOT NULL,
+    price_xaf DECIMAL(12,2),
+    features JSONB, -- Dynamic feature list used for limits [max_products, max_stores, vto_monthly]
+    is_active BOOLEAN DEFAULT TRUE,
+    is_featured BOOLEAN DEFAULT FALSE,
+    cta_text VARCHAR(50) DEFAULT 'Commencer',
+    cta_url VARCHAR(255) DEFAULT 'register.php'
+);
+
+-- ═══ NEW: SELLER PAYMENT SETTINGS ═══
+CREATE TABLE IF NOT EXISTS seller_payment_settings (
+    id SERIAL PRIMARY KEY,
+    user_id INT NOT NULL,
+    provider VARCHAR(50) NOT NULL, -- stripe, flutterwave, mobile_money, fedapay, moneco, zeyow, kkiapay
+    is_enabled BOOLEAN DEFAULT FALSE,
+    config JSONB, -- Encrypted API Keys or Numbers
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+CREATE INDEX IF NOT EXISTS idx_seller_pay_user ON seller_payment_settings(user_id);
+
+-- ═══ NEW: LANDING PAGE CONTENT (CMS) ═══
+CREATE TABLE IF NOT EXISTS landing_settings (
+    id SERIAL PRIMARY KEY,
+    section VARCHAR(50),
+    setting_key VARCHAR(100) UNIQUE,
+    setting_value TEXT,
+    description VARCHAR(255),
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Platform Settings (AI Config, Admin API Keys)
 CREATE TABLE IF NOT EXISTS platform_settings (
     setting_key VARCHAR(50) PRIMARY KEY,
     setting_value TEXT,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- Insert initial AI settings
+-- ═══ DATA SEEDING ═══
+
+-- Initial Pricing Plans
+INSERT INTO pricing_plans (name, price_xaf, features, is_featured) VALUES 
+('Starter', 0, '{"max_products": 20, "max_stores": 1, "vto_monthly": 50, "vto_enabled": true, "whatsapp": true, "analytics": true, "viral_hub": false}', FALSE),
+('Pro', 9900, '{"max_products": 1000, "max_stores": 1, "vto_monthly": 500, "vto_enabled": true, "whatsapp": true, "analytics": true, "viral_hub": true}', TRUE),
+('Enterprise', 49900, '{"max_products": 99999, "max_stores": 10, "vto_monthly": 10000, "vto_enabled": true, "whatsapp": true, "analytics": true, "viral_hub": true}', FALSE)
+ON CONFLICT (id) DO NOTHING;
+
+-- Initial Landing settings
+INSERT INTO landing_settings (section, setting_key, setting_value, description) VALUES
+('hero', 'hero_title', 'Votre boutique.<br><span class="gradient-text">Propulsée par l''IA.</span>', 'Titre principal du Hero'),
+('hero', 'hero_subtitle', 'Essayage virtuel intelligent. Commande WhatsApp en un clic. 10 thèmes premium adaptés à votre métier. Zéro friction pour vos clients.', 'Sous-titre du Hero'),
+('brand', 'site_logo_main', 'Aura<span>Store</span>', 'Logo HTML du site'),
+('brand', 'primary_color', '#FE7501', 'Couleur principale de la plateforme')
+ON CONFLICT (setting_key) DO NOTHING;
+
+-- Initial AI settings
 INSERT INTO platform_settings (setting_key, setting_value) VALUES 
 ('vto_provider', 'free'),
 ('hf_space_url', 'https://yisol-idm-vton.hf.space/api/predict'),
@@ -137,7 +187,6 @@ INSERT INTO platform_settings (setting_key, setting_value) VALUES
 ON CONFLICT (setting_key) DO NOTHING;
 
 -- Insert default admin (Password: admin123)
--- In Postgres, we use ON CONFLICT DO NOTHING or UPDATE
 INSERT INTO users (full_name, email, password, role) 
 VALUES ('AuraStore Admin', 'admin@aurastore.com', '$2y$10$g6AgfnlqoC.R8s8q88MWhe/nMWHnlcdgOM5pwN7zt5Yla3lrNcJni', 'admin')
 ON CONFLICT (email) DO NOTHING;

@@ -47,7 +47,7 @@ if (productForm) {
         const formData = new FormData(productForm);
 
         try {
-            const res = await fetch('api/products.php?action=create', {
+            const res = await fetch('products.php?action=create', {
                 method: 'POST',
                 body: formData
             });
@@ -73,7 +73,7 @@ async function deleteProduct(id) {
     formData.append('id', id);
 
     try {
-        const res = await fetch('api/products.php?action=delete', {
+        const res = await fetch('products.php?action=delete', {
             method: 'POST',
             body: formData
         });

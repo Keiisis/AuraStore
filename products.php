@@ -32,21 +32,25 @@ switch ($action) {
         $colors = trim($_POST['colors'] ?? '');
         $stock = intval($_POST['stock'] ?? 0);
         $isFeatured = isset($_POST['is_featured']) ? 1 : 0;
+        $vtoTarget = intval($_POST['vto_target_image'] ?? 1);
 
         if (empty($name) || $price <= 0) {
             echo json_encode(['error' => 'Nom et prix sont obligatoires']);
             exit();
         }
 
-        $imageUrl = '';
-        if (isset($_FILES['image']) && $_FILES['image']['error'] === 0) {
-            $upload = uploadImage($_FILES['image'], 'products');
-            if (isset($upload['url']))
-                $imageUrl = $upload['url'];
+        $images = ['', '', ''];
+        for ($i = 1; $i <= 3; $i++) {
+            $key = $i === 1 ? 'image' : 'image_' . $i;
+            if (isset($_FILES[$key]) && $_FILES[$key]['error'] === 0) {
+                $upload = uploadImage($_FILES[$key], 'products');
+                if (isset($upload['url']))
+                    $images[$i - 1] = $upload['url'];
+            }
         }
 
-        $stmt = $db->prepare("INSERT INTO products (store_id, name, description, price, old_price, image_url, sizes, colors, stock, is_featured) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-        $stmt->execute([$user['store_id'], $name, $description, $price, $oldPrice, $imageUrl, $sizes, $colors, $stock, $isFeatured]);
+        $stmt = $db->prepare("INSERT INTO products (store_id, name, description, price, old_price, image_url, image_2_url, image_3_url, sizes, colors, stock, is_featured, vto_target_image) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+        $stmt->execute([$user['store_id'], $name, $description, $price, $oldPrice, $images[0], $images[1], $images[2], $sizes, $colors, $stock, $isFeatured, $vtoTarget]);
 
         echo json_encode(['success' => true, 'id' => $db->lastInsertId()]);
         break;
@@ -64,7 +68,7 @@ switch ($action) {
             exit();
         }
 
-        $stmt = $db->prepare("UPDATE products SET name=?, description=?, price=?, old_price=?, sizes=?, colors=?, stock=?, is_featured=? WHERE id=? AND store_id=?");
+        $stmt = $db->prepare("UPDATE products SET name=?, description=?, price=?, old_price=?, sizes=?, colors=?, stock=?, is_featured=?, vto_target_image=? WHERE id=? AND store_id=?");
         $stmt->execute([
             $name,
             trim($_POST['description'] ?? ''),
@@ -74,15 +78,20 @@ switch ($action) {
             trim($_POST['colors'] ?? ''),
             intval($_POST['stock'] ?? 0),
             isset($_POST['is_featured']) ? 1 : 0,
+            intval($_POST['vto_target_image'] ?? 1),
             $id,
             $user['store_id']
         ]);
 
-        // Update image if a new one is uploaded
-        if (isset($_FILES['image']) && $_FILES['image']['error'] === 0) {
-            $upload = uploadImage($_FILES['image'], 'products');
-            if (isset($upload['url'])) {
-                $db->prepare("UPDATE products SET image_url = ? WHERE id = ?")->execute([$upload['url'], $id]);
+        // Update images if new ones are uploaded
+        for ($i = 1; $i <= 3; $i++) {
+            $key = $i === 1 ? 'image' : 'image_' . $i;
+            $dbCol = $i === 1 ? 'image_url' : 'image_' . $i . '_url';
+            if (isset($_FILES[$key]) && $_FILES[$key]['error'] === 0) {
+                $upload = uploadImage($_FILES[$key], 'products');
+                if (isset($upload['url'])) {
+                    $db->prepare("UPDATE products SET $dbCol = ? WHERE id = ?")->execute([$upload['url'], $id]);
+                }
             }
         }
 
