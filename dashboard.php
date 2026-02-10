@@ -294,10 +294,14 @@ try {
                 </div>
                 <div class="form-group">
                     <label for="cur"><i data-lucide="coins" class="icon"></i> Devise de la boutique</label>
-                    <select id="cur" name="currency" style="width:100%; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); color:white; padding:12px; border-radius:8px;">
-                        <option value="XAF" <?php echo ($user['currency'] ?? 'XAF') === 'XAF' ? 'selected' : ''; ?>>XAF (FCFA)</option>
-                        <option value="EUR" <?php echo ($user['currency'] ?? '') === 'EUR' ? 'selected' : ''; ?>>EUR (€)</option>
-                        <option value="USD" <?php echo ($user['currency'] ?? '') === 'USD' ? 'selected' : ''; ?>>USD ($)</option>
+                    <select id="cur" name="currency"
+                        style="width:100%; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); color:white; padding:12px; border-radius:8px;">
+                        <option value="XAF" <?php echo ($user['currency'] ?? 'XAF') === 'XAF' ? 'selected' : ''; ?>>XAF
+                            (FCFA)</option>
+                        <option value="EUR" <?php echo ($user['currency'] ?? '') === 'EUR' ? 'selected' : ''; ?>>EUR (€)
+                        </option>
+                        <option value="USD" <?php echo ($user['currency'] ?? '') === 'USD' ? 'selected' : ''; ?>>USD ($)
+                        </option>
                     </select>
                 </div>
                 <div class="form-group">
@@ -377,28 +381,114 @@ try {
                 </div>
                 <div class="form-group">
                     <label><i data-lucide="images" class="icon"></i> Photos du produit (Max 3)</label>
-                    <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:10px; margin-top:10px;">
-                        <div class="mini-upload">
-                            <label style="font-size:0.7rem; opacity:0.6; display:block; margin-bottom:5px;">Photo 1 (Principale)</label>
-                            <input type="file" name="image" id="img1" accept="image/*" class="mini-file-input">
-                            <div class="vto-sel"><input type="radio" name="vto_target_image" value="1" checked> VTO</div>
+                    <div class="image-upload-grid">
+                        <!-- Image 1 (Main) -->
+                        <div class="upload-box" id="box1" onclick="document.getElementById('img1').click()">
+                            <input type="file" name="image" id="img1" accept="image/*" hidden
+                                onchange="previewImage(this, 'preview1')">
+                            <div class="preview-area" id="preview1">
+                                <i data-lucide="image-plus" class="icon"></i>
+                                <span>Principale</span>
+                            </div>
+                            <div class="vto-selector">
+                                <input type="radio" name="vto_target_image" value="1" checked> VTO
+                            </div>
                         </div>
-                        <div class="mini-upload">
-                            <label style="font-size:0.7rem; opacity:0.6; display:block; margin-bottom:5px;">Photo 2</label>
-                            <input type="file" name="image_2" id="img2" accept="image/*" class="mini-file-input">
-                            <div class="vto-sel"><input type="radio" name="vto_target_image" value="2"> VTO</div>
+
+                        <!-- Image 2 -->
+                        <div class="upload-box" id="box2" onclick="document.getElementById('img2').click()">
+                            <input type="file" name="image_2" id="img2" accept="image/*" hidden
+                                onchange="previewImage(this, 'preview2')">
+                            <div class="preview-area" id="preview2">
+                                <i data-lucide="image-plus" class="icon"></i>
+                                <span>Photo 2</span>
+                            </div>
+                            <div class="vto-selector">
+                                <input type="radio" name="vto_target_image" value="2"> VTO
+                            </div>
                         </div>
-                        <div class="mini-upload">
-                            <label style="font-size:0.7rem; opacity:0.6; display:block; margin-bottom:5px;">Photo 3</label>
-                            <input type="file" name="image_3" id="img3" accept="image/*" class="mini-file-input">
-                            <div class="vto-sel"><input type="radio" name="vto_target_image" value="3"> VTO</div>
+
+                        <!-- Image 3 -->
+                        <div class="upload-box" id="box3" onclick="document.getElementById('img3').click()">
+                            <input type="file" name="image_3" id="img3" accept="image/*" hidden
+                                onchange="previewImage(this, 'preview3')">
+                            <div class="preview-area" id="preview3">
+                                <i data-lucide="image-plus" class="icon"></i>
+                                <span>Photo 3</span>
+                            </div>
+                            <div class="vto-selector">
+                                <input type="radio" name="vto_target_image" value="3"> VTO
+                            </div>
                         </div>
                     </div>
-                    <style>
-                        .mini-file-input { width:100%; font-size:0.6rem; background:rgba(255,255,255,0.05); padding:5px; border-radius:4px; }
-                        .vto-sel { font-size:0.6rem; margin-top:5px; color:#FE7501; font-weight:700; }
-                    </style>
                 </div>
+
+                <style>
+                    .image-upload-grid {
+                        display: grid;
+                        grid-template-columns: repeat(3, 1fr);
+                        gap: 15px;
+                        margin-top: 10px;
+                    }
+
+                    .upload-box {
+                        background: rgba(255, 255, 255, 0.05);
+                        border: 2px dashed rgba(255, 255, 255, 0.2);
+                        border-radius: 12px;
+                        height: 120px;
+                        position: relative;
+                        cursor: pointer;
+                        transition: all 0.3s ease;
+                        display: flex;
+                        flex-direction: column;
+                        align-items: center;
+                        justify-content: center;
+                    }
+
+                    .upload-box:hover {
+                        background: rgba(254, 117, 1, 0.1);
+                        border-color: #FE7501;
+                    }
+
+                    .preview-area {
+                        display: flex;
+                        flex-direction: column;
+                        align-items: center;
+                        justify-content: center;
+                        width: 100%;
+                        height: 100%;
+                        color: rgba(255, 255, 255, 0.6);
+                    }
+
+                    .preview-area img {
+                        width: 100%;
+                        height: 100%;
+                        object-fit: cover;
+                        border-radius: 10px;
+                    }
+
+                    .vto-selector {
+                        position: absolute;
+                        bottom: -25px;
+                        font-size: 0.75rem;
+                        color: white;
+                        display: flex;
+                        align-items: center;
+                        gap: 5px;
+                    }
+                </style>
+                <script>
+                    function previewImage(input, previewId) {
+                        const preview = document.getElementById(previewId);
+                        if (input.files && input.files[0]) {
+                            const reader = new FileReader();
+                            reader.onload = function (e) {
+                                preview.innerHTML = `<img src="${e.target.result}" alt="Preview">`;
+                            }
+                            reader.readAsDataURL(input.files[0]);
+                        }
+                    }
+                </script>
                 <div class="form-group checkbox-group">
                     <label><input type="checkbox" name="is_featured"> <i data-lucide="star" class="icon"></i> Mettre en
                         avant (Featured)</label>
@@ -495,25 +585,25 @@ try {
                         responsive: true,
                         maintainAspectRatio: false,
                         plugins: { legend: { display: false } },
-                                        pointBackgroundColor: '#FFE946',
-                                        pointBorderColor: '#FE7501',
-                                        pointRadius: 5,
-                                        borderWidth: 2.5
-                                    }]
-                                },
-                                options: {
-                                    responsive: true,
-                                    maintainAspectRatio: false,
-                                    plugins: { legend: { display: false } },
-                                    scales: {
-                                        y: { display: false },
-                                        x: { grid: { display: false }, ticks: { color: 'rgba(255,255,255,0.4)', font: { family: 'DM Sans' } } }
-                                    }
-                                }
+                        pointBackgroundColor: '#FFE946',
+                        pointBorderColor: '#FE7501',
+                        pointRadius: 5,
+                        borderWidth: 2.5
+                    }]
+                },
+                    options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: { display: false },
+                        x: { grid: { display: false }, ticks: { color: 'rgba(255,255,255,0.4)', font: { family: 'DM Sans' } } }
+                    }
+                }
                             });
-                        } catch(e) {
-                            console.error(e);
-                        }
+                        } catch (e) {
+            console.error(e);
+        }
                     }
                 });
     </script>
