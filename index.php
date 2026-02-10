@@ -1,6 +1,6 @@
 <?php
 /**
- * AuraStore - Premium Landing Page (Dynamic)
+ * AuraStore - Premium Landing Page (Full Restoration)
  */
 require_once 'includes/functions.php';
 require_once 'config/database.php';
@@ -190,24 +190,38 @@ $primary = $cms['primary_color'] ?? '#FE7501';
                     </div>
                 </div>
             </div>
+            <div class="floating-chip top-right glass-chip">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#FFE946" stroke-width="2">
+                    <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
+                </svg>
+                AI Lighting: Active
+            </div>
+            <div class="floating-chip bottom-left glass-chip">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#FE7501" stroke-width="2">
+                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
+                    <circle cx="8.5" cy="8.5" r="1.5" />
+                    <polyline points="21 15 16 10 5 21" />
+                </svg>
+                Image Enhancement
+            </div>
         </div>
     </section>
 
     <!-- ═══ LOGOS / SOCIAL PROOF ═══ -->
     <section class="social-proof" aria-label="Technologies utilisées">
         <div class="proof-track">
-            <span>VIRTUAL TRY-ON IA</span><span class="dot"></span>
-            <span>WHATSAPP CHECKOUT</span><span class="dot"></span>
-            <span>AURA SYNC LIGHTING</span><span class="dot"></span>
-            <span>ZERO INSCRIPTION CLIENT</span><span class="dot"></span>
-            <span>10 THÈMES PREMIUM</span><span class="dot"></span>
-            <span>VIRAL CONTENT HUB</span><span class="dot"></span>
-            <span>VIRTUAL TRY-ON IA</span><span class="dot"></span>
-            <span>WHATSAPP CHECKOUT</span><span class="dot"></span>
-            <span>AURA SYNC LIGHTING</span><span class="dot"></span>
-            <span>ZERO INSCRIPTION CLIENT</span><span class="dot"></span>
-            <span>10 THÈMES PREMIUM</span><span class="dot"></span>
-            <span>VIRAL CONTENT HUB</span>
+            <span>VIRTUAL TRY-ON IA</span><span class="dot" aria-hidden="true"></span>
+            <span>WHATSAPP CHECKOUT</span><span class="dot" aria-hidden="true"></span>
+            <span>AURA SYNC LIGHTING</span><span class="dot" aria-hidden="true"></span>
+            <span>ZERO INSCRIPTION CLIENT</span><span class="dot" aria-hidden="true"></span>
+            <span>10 THÈMES PREMIUM</span><span class="dot" aria-hidden="true"></span>
+            <span>VIRAL CONTENT HUB</span><span class="dot" aria-hidden="true"></span>
+            <span>VIRTUAL TRY-ON IA</span><span class="dot" aria-hidden="true"></span>
+            <span>WHATSAPP CHECKOUT</span><span class="dot" aria-hidden="true"></span>
+            <span>AURA SYNC LIGHTING</span><span class="dot" aria-hidden="true"></span>
+            <span>ZERO INSCRIPTION CLIENT</span><span class="dot" aria-hidden="true"></span>
+            <span>10 THÈMES PREMIUM</span><span class="dot" aria-hidden="true"></span>
+            <span>VIRAL CONTENT HUB</span><span class="dot" aria-hidden="true"></span>
         </div>
     </section>
 
@@ -223,6 +237,8 @@ $primary = $cms['primary_color'] ?? '#FE7501';
                         <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                             stroke-width="1.5">
                             <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446A9 9 0 1 1 12 3Z" />
+                            <path d="M17 4a2 2 0 0 0 2 2 2 2 0 0 0-2 2 2 2 0 0 0-2-2 2 2 0 0 0 2-2" />
+                            <path d="M22 7a1 1 0 0 0 1 1 1 1 0 0 0-1 1 1 1 0 0 0-1-1 1 1 0 0 0 1-1" />
                         </svg>
                     </div>
                     <h3>Aura Sync IA</h3>
@@ -254,6 +270,46 @@ $primary = $cms['primary_color'] ?? '#FE7501';
                     <p>Le tunnel le plus court du marché. De l'essayage au message WhatsApp pré-rempli en un seul tap.
                     </p>
                 </article>
+
+                <article class="feature-card glass-card reveal" tabindex="0">
+                    <div class="feature-icon">
+                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="1.5">
+                            <path d="M3 3v18h18" />
+                            <path d="m19 9-5 5-4-4-3 3" />
+                        </svg>
+                    </div>
+                    <h3>Analytics Premium</h3>
+                    <p>Suivez vues, essayages et conversions en temps réel. Identifiez vos best-sellers et optimisez vos
+                        ventes.</p>
+                </article>
+
+                <article class="feature-card glass-card reveal" tabindex="0">
+                    <div class="feature-icon">
+                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="1.5">
+                            <path d="M12 2L2 7l10 5 10-5-10-5Z" />
+                            <path d="M2 17l10 5 10-5" />
+                            <path d="M2 12l10 5 10-5" />
+                        </svg>
+                    </div>
+                    <h3>10 Thèmes Dynamiques</h3>
+                    <p>Chaque catégorie possède son ADN visuel unique — couleurs, typographie et ambiance adaptées à
+                        votre niche.</p>
+                </article>
+
+                <article class="feature-card glass-card reveal" tabindex="0">
+                    <div class="feature-icon">
+                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="1.5">
+                            <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+                            <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                        </svg>
+                    </div>
+                    <h3>Privacy First</h3>
+                    <p>Zéro compte client requis. Les photos sont traitées, jamais stockées. Suppression automatique
+                        garantie.</p>
+                </article>
             </div>
         </div>
     </section>
@@ -263,14 +319,19 @@ $primary = $cms['primary_color'] ?? '#FE7501';
         <div class="container">
             <div class="section-eyebrow reveal">Univers</div>
             <h2 class="section-title reveal">10 identités visuelles.<br><span>La vôtre existe déjà.</span></h2>
+
             <div class="categories-grid">
                 <div class="cat-card reveal" style="--accent:#FFE946">
                     <h4>Streetwear</h4>
                     <p>Neon · Cyber-Tech</p>
                 </div>
                 <div class="cat-card reveal" style="--accent:#D4AF37">
-                    <h4>Montres</h4>
+                    <h4>Montres de Luxe</h4>
                     <p>Gold · Minimalism</p>
+                </div>
+                <div class="cat-card reveal" style="--accent:#FFD700">
+                    <h4>Traditionnel</h4>
+                    <p>Warm · Heritage</p>
                 </div>
                 <div class="cat-card reveal" style="--accent:#00FF94">
                     <h4>Sneakers</h4>
@@ -280,15 +341,36 @@ $primary = $cms['primary_color'] ?? '#FE7501';
                     <h4>Bijoux</h4>
                     <p>Pure · Radiant</p>
                 </div>
+                <div class="cat-card reveal" style="--accent:#FF4D00">
+                    <h4>Lunettes</h4>
+                    <p>Glass · Focus</p>
+                </div>
+                <div class="cat-card reveal" style="--accent:#FFC0CB">
+                    <h4>Haute Couture</h4>
+                    <p>Silk · Avant-garde</p>
+                </div>
+                <div class="cat-card reveal" style="--accent:#00D1FF">
+                    <h4>Sportswear</h4>
+                    <p>Power · Pulse</p>
+                </div>
+                <div class="cat-card reveal" style="--accent:#FADBD8">
+                    <h4>Beauté</h4>
+                    <p>Nude · Smooth</p>
+                </div>
+                <div class="cat-card reveal" style="--accent:#CD7F32">
+                    <h4>Maroquinerie</h4>
+                    <p>Artisanal · Tactile</p>
+                </div>
             </div>
         </div>
     </section>
 
     <!-- ═══ HOW IT WORKS ═══ -->
-    <section class="how-section" id="how" aria-label="Fonctionnement">
+    <section class="how-section" id="how" aria-label="Comment ça marche">
         <div class="container">
             <div class="section-eyebrow reveal">Processus</div>
             <h2 class="section-title reveal">Trois étapes.<br><span>Zéro complexité.</span></h2>
+
             <div class="steps-grid">
                 <article class="step-card reveal">
                     <div class="step-num">01</div>
@@ -297,13 +379,13 @@ $primary = $cms['primary_color'] ?? '#FE7501';
                 </article>
                 <article class="step-card reveal">
                     <div class="step-num">02</div>
-                    <h3>Configurez</h3>
-                    <p>Choisissez votre catégorie, uploadez vos produits. Le thème s'adapte.</p>
+                    <h3>Configurez votre boutique</h3>
+                    <p>Choisissez votre catégorie, uploadez vos produits. Le thème s'adapte tout seul.</p>
                 </article>
                 <article class="step-card reveal">
                     <div class="step-num">03</div>
-                    <h3>Vendez</h3>
-                    <p>Partagez votre lien. Clients essayent et commandent sur WhatsApp.</p>
+                    <h3>Partagez & Vendez</h3>
+                    <p>Clients essayent virtuellement, adorent, et commandent en un tap sur WhatsApp.</p>
                 </article>
             </div>
         </div>
@@ -322,9 +404,22 @@ $primary = $cms['primary_color'] ?? '#FE7501';
                             <div class="plan-price">0 <span>XAF / mois</span></div>
                         </div>
                         <ul class="plan-features">
-                            <li>1 Boutique</li>
-                            <li>20 Produits</li>
-                            <li>50 Essayages IA / mois</li>
+                            <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#00FF94"
+                                    stroke-width="2.5">
+                                    <polyline points="20 6 9 17 4 12" />
+                                </svg> 1 Boutique</li>
+                            <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#00FF94"
+                                    stroke-width="2.5">
+                                    <polyline points="20 6 9 17 4 12" />
+                                </svg> 20 Produits</li>
+                            <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#00FF94"
+                                    stroke-width="2.5">
+                                    <polyline points="20 6 9 17 4 12" />
+                                </svg> 50 Essayages IA / mois</li>
+                            <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#00FF94"
+                                    stroke-width="2.5">
+                                    <polyline points="20 6 9 17 4 12" />
+                                </svg> WhatsApp Checkout</li>
                         </ul>
                         <a href="register.php" class="btn-plan">Commencer</a>
                     </article>
@@ -334,11 +429,44 @@ $primary = $cms['primary_color'] ?? '#FE7501';
                             <div class="plan-price">9 900 <span>XAF / mois</span></div>
                         </div>
                         <ul class="plan-features">
-                            <li>Produits illimités</li>
-                            <li>500 Essayages IA / mois</li>
-                            <li>WhatsApp Checkout</li>
+                            <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#00FF94"
+                                    stroke-width="2.5">
+                                    <polyline points="20 6 9 17 4 12" />
+                                </svg> Boutique Premium</li>
+                            <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#00FF94"
+                                    stroke-width="2.5">
+                                    <polyline points="20 6 9 17 4 12" />
+                                </svg> Produits illimités</li>
+                            <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#00FF94"
+                                    stroke-width="2.5">
+                                    <polyline points="20 6 9 17 4 12" />
+                                </svg> 500 Essayages IA / mois</li>
+                            <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#00FF94"
+                                    stroke-width="2.5">
+                                    <polyline points="20 6 9 17 4 12" />
+                                </svg> Viral Content Hub</li>
                         </ul>
                         <a href="register.php" class="btn-plan btn-plan-featured">Choisir Pro</a>
+                    </article>
+                    <article class="price-card glass-card reveal">
+                        <div class="plan-header"><span class="plan-name">Enterprise</span>
+                            <div class="plan-price">Sur mesure</div>
+                        </div>
+                        <ul class="plan-features">
+                            <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#00FF94"
+                                    stroke-width="2.5">
+                                    <polyline points="20 6 9 17 4 12" />
+                                </svg> Multi-boutiques</li>
+                            <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#00FF94"
+                                    stroke-width="2.5">
+                                    <polyline points="20 6 9 17 4 12" />
+                                </svg> Essayages illimités</li>
+                            <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#00FF94"
+                                    stroke-width="2.5">
+                                    <polyline points="20 6 9 17 4 12" />
+                                </svg> White Label</li>
+                        </ul>
+                        <a href="#" class="btn-plan">Contacter</a>
                     </article>
                 <?php else: ?>
                     <?php foreach ($plans as $p):
@@ -354,11 +482,24 @@ $primary = $cms['primary_color'] ?? '#FE7501';
                                         mois</span></div>
                             </div>
                             <ul class="plan-features">
-                                <li><?php echo $f['max_stores'] ?? 1; ?> Boutique</li>
-                                <li><?php echo ($f['max_products'] ?? 0) > 10000 ? 'Produits illimités' : ($f['max_products'] ?? 0) . ' Produits'; ?>
+                                <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#00FF94"
+                                        stroke-width="2.5">
+                                        <polyline points="20 6 9 17 4 12" />
+                                    </svg> <?php echo $f['max_stores'] ?? 1; ?> Boutique</li>
+                                <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#00FF94"
+                                        stroke-width="2.5">
+                                        <polyline points="20 6 9 17 4 12" />
+                                    </svg>
+                                    <?php echo ($f['max_products'] ?? 0) > 10000 ? 'Produits illimités' : ($f['max_products'] ?? 0) . ' Produits'; ?>
                                 </li>
-                                <li><?php echo $f['vto_monthly'] ?? 0; ?> Essayages IA / mois</li>
-                                <li>WhatsApp Checkout</li>
+                                <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#00FF94"
+                                        stroke-width="2.5">
+                                        <polyline points="20 6 9 17 4 12" />
+                                    </svg> <?php echo $f['vto_monthly'] ?? 0; ?> Essayages IA / mois</li>
+                                <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#00FF94"
+                                        stroke-width="2.5">
+                                        <polyline points="20 6 9 17 4 12" />
+                                    </svg> WhatsApp Checkout</li>
                             </ul>
                             <a href="<?php echo $p['cta_url'] ?? 'register.php'; ?>"
                                 class="btn-plan <?php echo $p['is_featured'] ? 'btn-plan-featured' : ''; ?>"><?php echo $p['cta_text'] ?? 'Commencer'; ?></a>
@@ -371,8 +512,10 @@ $primary = $cms['primary_color'] ?? '#FE7501';
 
     <!-- ═══ CTA FINAL ═══ -->
     <section class="final-cta">
-        <div class="container">
+        <div class="cta-orb" aria-hidden="true"></div>
+        <div class="container" style="position:relative;z-index:2;">
             <h2 class="reveal">Prêt à transformer<br><span class="gradient-text">votre business ?</span></h2>
+            <p class="reveal">Rejoignez les vendeurs qui utilisent l'IA pour vendre plus, plus vite, sans friction.</p>
             <a href="register.php" class="btn-main reveal">Lancer ma boutique</a>
         </div>
     </section>
@@ -382,9 +525,18 @@ $primary = $cms['primary_color'] ?? '#FE7501';
         <div class="container">
             <div class="footer-grid">
                 <div class="footer-brand">
-                    <div class="logo">Aura<span>Store</span></div>
-                    <p>La plateforme IA qui révolutionne la mode.</p>
+                    <div class="logo" style="font-size:1.8rem;">Aura<span>Store</span></div>
+                    <p>La plateforme de commerce IA qui révolutionne la mode en Afrique et dans le monde.</p>
                 </div>
+                <nav class="footer-col" aria-label="Produit">
+                    <h4>Produit</h4>
+                    <a href="#features">Fonctionnalités</a><a href="#pricing">Tarifs</a><a
+                        href="#categories">Catégories</a>
+                </nav>
+                <nav class="footer-col" aria-label="Légal">
+                    <h4>Légal</h4>
+                    <a href="#">Confidentialité</a><a href="#">Conditions</a><a href="#">CGV</a>
+                </nav>
             </div>
             <div class="footer-bottom">
                 <p>&copy; <?php echo date('Y'); ?> AuraStore. Tous droits réservés.</p>

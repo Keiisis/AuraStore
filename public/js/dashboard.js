@@ -44,6 +44,12 @@ const productForm = document.getElementById('productForm');
 if (productForm) {
     productForm.addEventListener('submit', async (e) => {
         e.preventDefault();
+
+        const submitBtn = productForm.querySelector('button[type="submit"]');
+        const originalText = submitBtn.innerHTML;
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<i class="icon-loader spin"></i> Publication...';
+
         const formData = new FormData(productForm);
 
         try {
@@ -51,16 +57,37 @@ if (productForm) {
                 method: 'POST',
                 body: formData
             });
-            const data = await res.json();
+
+            const text = await res.text();
+            let data;
+            try {
+                data = JSON.parse(text);
+            } catch (e) {
+                console.error('Server response:', text);
+                throw new Error('Réponse serveur invalide (voir console)');
+            }
 
             if (data.success) {
-                closeModal();
-                location.reload();
+                // Success Toast
+                const toast = document.createElement('div');
+                toast.className = 'toast success';
+                toast.innerHTML = '<i data-lucide="check"></i> Produit publié !';
+                document.body.appendChild(toast);
+                if (window.lucide) lucide.createIcons();
+
+                setTimeout(() => {
+                    closeModal();
+                    location.reload();
+                }, 1000);
             } else {
                 alert(data.error || 'Erreur lors de la création.');
             }
         } catch (err) {
-            alert('Erreur réseau. Réessayez.');
+            console.error(err);
+            alert('Erreur: ' + err.message);
+        } finally {
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = originalText;
         }
     });
 }
