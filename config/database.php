@@ -23,17 +23,15 @@ function getDB()
             $dsn = "pgsql:host=$host;port=$port;dbname=$dbname";
         } else {
             // Local Fallback or Individual Vars
-            $host = getenv('DB_HOST') ?: '127.0.0.1';
-            $dbname = getenv('DB_NAME') ?: 'aurastore';
-            $user = getenv('DB_USER') ?: 'root';
-            $pass = getenv('DB_PASS') ?: '';
-            $port = getenv('DB_PORT') ?: '5432'; // Default Postgres port
+            $host = getenv('DB_HOST') ?: 'sql105.infinityfree.com';
+            $dbname = getenv('DB_NAME') ?: 'if0_41123536_aron';
+            $user = getenv('DB_USER') ?: 'if0_41123536';
+            $pass = getenv('DB_PASS') ?: 'gapihnRkGREv7I';
+            $port = getenv('DB_PORT') ?: '3306';
 
             // Check if we are running locally (likely MySQL) or Prod (Postgres) based on port/driver
-            // For this migration, we assume we want Postgres if vars are set, or default to MySQL locally if needed.
-            // But user asked for Supabase migration. Let's force pgsql or make it configurable.
-
-            $driver = getenv('DB_CONNECTION') ?: 'pgsql';
+            // Forced to mysql for InfinityFree
+            $driver = 'mysql';
 
             if ($driver === 'mysql') {
                 $dsn = "mysql:host=$host;port=$port;dbname=$dbname;charset=utf8mb4";
