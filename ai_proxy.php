@@ -1,6 +1,6 @@
 <?php
 /**
- * Aura AI Proxy - Bridge to Zhipu AI (GLM-4)
+ * Aura AI Proxy - Bridge to Groq Cloud
  */
 require_once 'includes/security.php';
 require_once 'includes/auth.php';
@@ -24,14 +24,14 @@ if (!$msg) {
 }
 
 $db = getDB();
-$apiKey = $db->query("SELECT setting_value FROM platform_settings WHERE setting_key = 'zhipu_api_key'")->fetchColumn();
+$apiKey = $db->query("SELECT setting_value FROM platform_settings WHERE setting_key = 'groq_api_key'")->fetchColumn();
 
 if (!$apiKey) {
-    $apiKey = getenv('ZHIPU_API_KEY'); // Fallback to Env
+    $apiKey = getenv('GROQ_API_KEY'); // Fallback to Env
 }
 
 if (!$apiKey) {
-    echo json_encode(['reply' => "⚠️ Erreur: Clé API Zhipu (GLM) non configurée. Renseignez 'zhipu_api_key' dans platform_settings."]);
+    echo json_encode(['reply' => "⚠️ Erreur: Clé API Groq non configurée par l'administrateur. Renseignez 'groq_api_key' dans platform_settings."]);
     exit();
 }
 
@@ -53,40 +53,30 @@ if ($personaType === 'seller') {
 }
 
 try {
-    // Zhipu AI (GLM-4) Endpoint - OpenAI Compatible
-    $ch = curl_init('https://open.bigmodel.cn/api/paas/v4/chat/completions');
+    $ch = curl_init('https://api.groq.com/openai/v1/chat/completions');
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
     curl_setopt($ch, CURLOPT_POST, true);
-    // Zhipu requires simple Bearer token for V4 API
     curl_setopt($ch, CURLOPT_HTTPHEADER, [
         'Authorization: Bearer ' . $apiKey,
         'Content-Type: application/json'
     ]);
 
     $payload = [
-        'model' => 'glm-4', // Using GLM-4 as requested (closest to "4.7" if it implies latest)
+        'model' => 'llama3-70b-8192',
         'messages' => [
             ['role' => 'system', 'content' => $context],
             ['role' => 'user', 'content' => $msg]
         ],
-        'temperature' => 0.7,
-        'top_p' => 0.7,
-        'requestId' => uniqid('aura_')
+        'temperature' => 0.7
     ];
 
     curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($payload));
     $response = curl_exec($ch);
-
-    if (curl_errno($ch)) {
-        throw new Exception(curl_error($ch));
-    }
-
     $data = json_decode($response, true);
 
-    $reply = $data['choices'][0]['message']['content'] ?? "Erreur API GLM: " . ($data['error']['message'] ?? "Réponse vide");
+    $reply = $data['choices'][0]['message']['content'] ?? "Désolé, je ne peux pas répondre pour le moment.";
     echo json_encode(['reply' => $reply]);
 
 } catch (Exception $e) {
-    error_log("Zhipu AI Error: " . $e->getMessage());
-    echo json_encode(['reply' => "Erreur technique lors de la communication avec le cerveau GLM."]);
+    echo json_encode(['reply' => "Erreur technique lors de la communication avec le cerveau IA."]);
 }
