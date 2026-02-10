@@ -1,0 +1,139 @@
+/* Core Styles for Authentic SaaS Experience */
+:root {
+    --glass-bg: rgba(255, 255, 255, 0.03);
+    --glass-border: rgba(255, 255, 255, 0.1);
+}
+
+body {
+    background-color: var(--bg-color);
+    color: white;
+    font-family: var(--font-main);
+    margin: 0;
+    overflow-x: hidden;
+}
+
+.glass {
+    background: var(--glass-bg);
+    backdrop-filter: blur(20px);
+    border: 1px solid var(--glass-border);
+    border-radius: 20px;
+}
+
+header {
+    padding: 40px 5%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+nav {
+    display: flex;
+    gap: 30px;
+    padding: 15px 30px;
+}
+
+nav a {
+    color: white;
+    text-decoration: none;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.8rem;
+    letter-spacing: 1px;
+    opacity: 0.6;
+    transition: 0.3s;
+}
+
+nav a:hover {
+    opacity: 1;
+    color: var(--p-color);
+}
+
+/* VTO Dynamic Hero */
+.vto-dynamic-hero {
+    height: 80vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+.visual-container {
+    position: relative;
+    width: 500px;
+    height: 700px;
+}
+
+.blob-aura {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: var(--lava-gradient);
+    filter: blur(80px);
+    opacity: 0.4;
+    border-radius: 50%;
+    animation: pulse 10s infinite alternate;
+}
+
+@keyframes pulse {
+    from {
+        transform: scale(1);
+        opacity: 0.3;
+    }
+
+    to {
+        transform: scale(1.2);
+        opacity: 0.5;
+    }
+}
+
+.model-view {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    position: relative;
+    z-index: 2;
+}
+
+.controls {
+    position: absolute;
+    bottom: 50px;
+    right: 5%;
+    padding: 30px;
+    width: 300px;
+}
+
+.vto-btn {
+    width: 100%;
+    padding: 15px;
+    margin-top: 10px;
+    border-radius: 12px;
+    border: 1px solid var(--glass-border);
+    background: transparent;
+    color: white;
+    font-weight: 700;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.vto-btn.primary {
+    background: var(--lava-gradient);
+    border: none;
+}
+
+.vto-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+}
+
+/* Specific Category Overrides */
+.theme-cyber-tech .vto-btn {
+    border-color: var(--p-color);
+}
+
+.theme-minimalist-gold {
+    font-weight: 300;
+}
+
+.theme-power-pulse {
+    font-style: italic;
+}
