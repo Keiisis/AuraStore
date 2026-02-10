@@ -49,7 +49,7 @@ function getDB()
         } catch (PDOException $e) {
             // Log error safely in production
             error_log("DB Connection Error: " . $e->getMessage());
-            throw new RuntimeException("Erreur de connexion à la base de données (Supabase/SQL).");
+            die("Erreur de connexion SQL : " . $e->getMessage());
         }
     }
 
