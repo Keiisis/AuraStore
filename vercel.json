@@ -1,18 +1,30 @@
 {
     "cleanUrls": true,
-    "rewrites": [
-        {
-            "source": "/(login|register|dashboard|admin|store|setup-store|logout)",
-            "destination": "/api/$1.php"
-        },
-        {
-            "source": "/api/(.*)",
-            "destination": "/api/$1"
-        }
-    ],
     "functions": {
-        "api/*.php": {
+        "*.php": {
             "runtime": "vercel-php@0.7.1"
         }
-    }
+    },
+    "routes": [
+        {
+            "src": "/public/(.*)",
+            "dest": "/public/$1"
+        },
+        {
+            "src": "/style.css",
+            "dest": "/style.css"
+        },
+        {
+            "src": "/main.js",
+            "dest": "/main.js"
+        },
+        {
+            "src": "/index.html",
+            "dest": "/index.html"
+        },
+        {
+            "src": "/(.*)",
+            "dest": "/index.php"
+        }
+    ]
 }
