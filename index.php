@@ -1,28 +1,21 @@
 <?php
 /**
- * AuraStore - Premium Landing Page (Full Restoration)
+ * AuraStore - Premium Landing Page (Restored)
  */
 require_once 'includes/functions.php';
 require_once 'config/database.php';
 
 $db = null;
 $cms = [];
-$plans = [];
 
 try {
     $db = getDB();
-
-    // Fetch Dynamic Content (CMS)
+    // Fetch Dynamic Content (CMS) - only settings, not plans to ensure design stability
     $cmsRaw = $db->query("SELECT * FROM landing_settings")->fetchAll();
     foreach ($cmsRaw as $row) {
         $cms[$row['setting_key']] = $row['setting_value'];
     }
-
-    // Fetch Plans
-    $plans = $db->query("SELECT * FROM pricing_plans WHERE is_active IS TRUE ORDER BY price_xaf ASC")->fetchAll();
-
 } catch (Exception $e) {
-    // If DB is not ready or tables missing, we use defaults without crashing
     error_log("Landing Page DB Error: " . $e->getMessage());
 }
 
@@ -391,121 +384,116 @@ $primary = $cms['primary_color'] ?? '#FE7501';
         </div>
     </section>
 
-    <!-- ═══ PRICING SECTION ═══ -->
+    <!-- ═══ PRICING SECTION (RESTORED STATIC) ═══ -->
     <section class="pricing" id="pricing">
         <div class="container">
             <div class="section-eyebrow reveal">Tarifs</div>
             <h2 class="section-title reveal">Choissisez la puissance <span>adaptée à votre business</span></h2>
 
             <div class="pricing-grid">
-                <?php if (empty($plans)): ?>
-                    <article class="price-card glass-card reveal">
-                        <div class="plan-header"><span class="plan-name">Starter</span>
-                            <div class="plan-price">0 <span>XAF / mois</span></div>
-                        </div>
-                        <ul class="plan-features">
-                            <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#00FF94"
-                                    stroke-width="2.5">
-                                    <polyline points="20 6 9 17 4 12" />
-                                </svg> 1 Boutique</li>
-                            <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#00FF94"
-                                    stroke-width="2.5">
-                                    <polyline points="20 6 9 17 4 12" />
-                                </svg> 20 Produits</li>
-                            <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#00FF94"
-                                    stroke-width="2.5">
-                                    <polyline points="20 6 9 17 4 12" />
-                                </svg> 50 Essayages IA / mois</li>
-                            <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#00FF94"
-                                    stroke-width="2.5">
-                                    <polyline points="20 6 9 17 4 12" />
-                                </svg> WhatsApp Checkout</li>
-                        </ul>
-                        <a href="register.php" class="btn-plan">Commencer</a>
-                    </article>
-                    <article class="price-card glass-card featured reveal">
-                        <div class="popular-tag">POPULAIRE</div>
-                        <div class="plan-header"><span class="plan-name">Pro</span>
-                            <div class="plan-price">9 900 <span>XAF / mois</span></div>
-                        </div>
-                        <ul class="plan-features">
-                            <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#00FF94"
-                                    stroke-width="2.5">
-                                    <polyline points="20 6 9 17 4 12" />
-                                </svg> Boutique Premium</li>
-                            <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#00FF94"
-                                    stroke-width="2.5">
-                                    <polyline points="20 6 9 17 4 12" />
-                                </svg> Produits illimités</li>
-                            <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#00FF94"
-                                    stroke-width="2.5">
-                                    <polyline points="20 6 9 17 4 12" />
-                                </svg> 500 Essayages IA / mois</li>
-                            <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#00FF94"
-                                    stroke-width="2.5">
-                                    <polyline points="20 6 9 17 4 12" />
-                                </svg> Viral Content Hub</li>
-                        </ul>
-                        <a href="register.php" class="btn-plan btn-plan-featured">Choisir Pro</a>
-                    </article>
-                    <article class="price-card glass-card reveal">
-                        <div class="plan-header"><span class="plan-name">Enterprise</span>
-                            <div class="plan-price">Sur mesure</div>
-                        </div>
-                        <ul class="plan-features">
-                            <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#00FF94"
-                                    stroke-width="2.5">
-                                    <polyline points="20 6 9 17 4 12" />
-                                </svg> Multi-boutiques</li>
-                            <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#00FF94"
-                                    stroke-width="2.5">
-                                    <polyline points="20 6 9 17 4 12" />
-                                </svg> Essayages illimités</li>
-                            <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#00FF94"
-                                    stroke-width="2.5">
-                                    <polyline points="20 6 9 17 4 12" />
-                                </svg> White Label</li>
-                        </ul>
-                        <a href="#" class="btn-plan">Contacter</a>
-                    </article>
-                <?php else: ?>
-                    <?php foreach ($plans as $p):
-                        $f = json_decode($p['features'], true) ?: [];
-                        ?>
-                        <article class="price-card glass-card <?php echo $p['is_featured'] ? 'featured' : ''; ?> reveal">
-                            <?php if ($p['is_featured']): ?>
-                                <div class="popular-tag">POPULAIRE</div><?php endif; ?>
-                            <div class="plan-header">
-                                <span class="plan-name"><?php echo htmlspecialchars($p['name']); ?></span>
-                                <div class="plan-price">
-                                    <?php echo $p['price_xaf'] > 0 ? number_format($p['price_xaf']) : '0'; ?> <span>XAF /
-                                        mois</span></div>
-                            </div>
-                            <ul class="plan-features">
-                                <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#00FF94"
-                                        stroke-width="2.5">
-                                        <polyline points="20 6 9 17 4 12" />
-                                    </svg> <?php echo $f['max_stores'] ?? 1; ?> Boutique</li>
-                                <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#00FF94"
-                                        stroke-width="2.5">
-                                        <polyline points="20 6 9 17 4 12" />
-                                    </svg>
-                                    <?php echo ($f['max_products'] ?? 0) > 10000 ? 'Produits illimités' : ($f['max_products'] ?? 0) . ' Produits'; ?>
-                                </li>
-                                <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#00FF94"
-                                        stroke-width="2.5">
-                                        <polyline points="20 6 9 17 4 12" />
-                                    </svg> <?php echo $f['vto_monthly'] ?? 0; ?> Essayages IA / mois</li>
-                                <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#00FF94"
-                                        stroke-width="2.5">
-                                        <polyline points="20 6 9 17 4 12" />
-                                    </svg> WhatsApp Checkout</li>
-                            </ul>
-                            <a href="<?php echo $p['cta_url'] ?? 'register.php'; ?>"
-                                class="btn-plan <?php echo $p['is_featured'] ? 'btn-plan-featured' : ''; ?>"><?php echo $p['cta_text'] ?? 'Commencer'; ?></a>
-                        </article>
-                    <?php endforeach; ?>
-                <?php endif; ?>
+                <article class="price-card glass-card reveal" tabindex="0">
+                    <div class="plan-header">
+                        <span class="plan-name">Starter</span>
+                        <div class="plan-price">0 <span>XAF / mois</span></div>
+                    </div>
+                    <ul class="plan-features" role="list">
+                        <li role="listitem"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#00FF94"
+                                stroke-width="2.5">
+                                <polyline points="20 6 9 17 4 12" />
+                            </svg> 1 Boutique</li>
+                        <li role="listitem"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#00FF94"
+                                stroke-width="2.5">
+                                <polyline points="20 6 9 17 4 12" />
+                            </svg> 20 Produits</li>
+                        <li role="listitem"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#00FF94"
+                                stroke-width="2.5">
+                                <polyline points="20 6 9 17 4 12" />
+                            </svg> 50 Essayages IA / mois</li>
+                        <li role="listitem"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#00FF94"
+                                stroke-width="2.5">
+                                <polyline points="20 6 9 17 4 12" />
+                            </svg> WhatsApp Checkout</li>
+                        <li role="listitem"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#00FF94"
+                                stroke-width="2.5">
+                                <polyline points="20 6 9 17 4 12" />
+                            </svg> Dashboard Analytics</li>
+                        <li role="listitem" class="disabled"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2">
+                                <line x1="18" y1="6" x2="6" y2="18" />
+                                <line x1="6" y1="6" x2="18" y2="18" />
+                            </svg> Viral Content Hub</li>
+                    </ul>
+                    <a href="register.php" class="btn-plan">Commencer</a>
+                </article>
+
+                <article class="price-card glass-card featured reveal" tabindex="0">
+                    <div class="popular-tag">POPULAIRE</div>
+                    <div class="plan-header">
+                        <span class="plan-name">Pro</span>
+                        <div class="plan-price">9 900 <span>XAF / mois</span></div>
+                    </div>
+                    <ul class="plan-features" role="list">
+                        <li role="listitem"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#00FF94"
+                                stroke-width="2.5">
+                                <polyline points="20 6 9 17 4 12" />
+                            </svg> 1 Boutique Premium</li>
+                        <li role="listitem"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#00FF94"
+                                stroke-width="2.5">
+                                <polyline points="20 6 9 17 4 12" />
+                            </svg> Produits illimités</li>
+                        <li role="listitem"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#00FF94"
+                                stroke-width="2.5">
+                                <polyline points="20 6 9 17 4 12" />
+                            </svg> 500 Essayages IA / mois</li>
+                        <li role="listitem"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#00FF94"
+                                stroke-width="2.5">
+                                <polyline points="20 6 9 17 4 12" />
+                            </svg> WhatsApp Checkout</li>
+                        <li role="listitem"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#00FF94"
+                                stroke-width="2.5">
+                                <polyline points="20 6 9 17 4 12" />
+                            </svg> Analytics avancés</li>
+                        <li role="listitem"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#00FF94"
+                                stroke-width="2.5">
+                                <polyline points="20 6 9 17 4 12" />
+                            </svg> Viral Content Hub</li>
+                    </ul>
+                    <a href="register.php" class="btn-plan btn-plan-featured">Choisir Pro</a>
+                </article>
+
+                <article class="price-card glass-card reveal" tabindex="0">
+                    <div class="plan-header">
+                        <span class="plan-name">Enterprise</span>
+                        <div class="plan-price">Sur mesure</div>
+                    </div>
+                    <ul class="plan-features" role="list">
+                        <li role="listitem"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#00FF94"
+                                stroke-width="2.5">
+                                <polyline points="20 6 9 17 4 12" />
+                            </svg> Multi-boutiques</li>
+                        <li role="listitem"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#00FF94"
+                                stroke-width="2.5">
+                                <polyline points="20 6 9 17 4 12" />
+                            </svg> Essayages illimités</li>
+                        <li role="listitem"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#00FF94"
+                                stroke-width="2.5">
+                                <polyline points="20 6 9 17 4 12" />
+                            </svg> API IA directe</li>
+                        <li role="listitem"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#00FF94"
+                                stroke-width="2.5">
+                                <polyline points="20 6 9 17 4 12" />
+                            </svg> Support prioritaire 24/7</li>
+                        <li role="listitem"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#00FF94"
+                                stroke-width="2.5">
+                                <polyline points="20 6 9 17 4 12" />
+                            </svg> Custom Domain</li>
+                        <li role="listitem"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#00FF94"
+                                stroke-width="2.5">
+                                <polyline points="20 6 9 17 4 12" />
+                            </svg> White Label</li>
+                    </ul>
+                    <a href="#" class="btn-plan">Nous contacter</a>
+                </article>
             </div>
         </div>
     </section>

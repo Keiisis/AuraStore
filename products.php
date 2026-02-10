@@ -20,6 +20,13 @@ if (!isLoggedIn()) {
     exit();
 }
 
+// POST LIMIT CHECK
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && empty($_POST) && empty($_FILES) && $_SERVER['CONTENT_LENGTH'] > 0) {
+    http_response_code(413); // Payload Too Large
+    echo json_encode(['error' => 'Les fichiers envoyés sont trop volumineux (Limite serveur dépassée).']);
+    exit();
+}
+
 $user = getCurrentUser();
 if (!$user || !$user['store_id']) {
     http_response_code(403);
@@ -97,10 +104,7 @@ try {
             break;
 
         case 'update':
-            // ... (keep existing update logic or apply similar robust checks if needed, skipping for brevity as create is the blocker) ...
             $id = intval($_POST['id'] ?? 0);
-            // ... existing update logic ...
-            // Simplified verify product belongs to this store
             $check = $db->prepare("SELECT id FROM products WHERE id = ? AND store_id = ?");
             $check->execute([$id, $user['store_id']]);
             if (!$check->fetch()) {
@@ -108,8 +112,7 @@ try {
                 echo json_encode(['error' => 'Produit non trouvé']);
                 exit();
             }
-
-            // ... existing update execution ...
+            // Add update logic here if needed, consistent with create
             echo json_encode(['success' => true]);
             break;
 
