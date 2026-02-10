@@ -1,18 +1,21 @@
 {
     "functions": {
-        "api/*.php": { "runtime": "vercel-php@0.6.0" },
-        "*.php": { "runtime": "vercel-php@0.6.0" }
+        "api/*.php": {
+            "runtime": "vercel-php@0.6.0"
+        }
     },
     "routes": [
-        { "src": "/public/(.*)", "dest": "/public/$1" },
-        { "src": "/assets/(.*)", "dest": "/assets/$1" },
-        { "src": "/uploads/(.*)", "dest": "/uploads/$1" },
-        { "src": "/(.*)", "dest": "/$1" }
-    ],
-    "env": {
-        "DB_HOST": "127.0.0.1",
-        "DB_NAME": "aurastore",
-        "DB_USER": "root",
-        "DB_PASS": ""
-    }
+        {
+            "src": "/api/uploads/(.*)",
+            "dest": "/public/uploads/$1"
+        },
+        {
+            "src": "/(login|register|dashboard|admin|store|setup-store|logout|index)\\.php",
+            "dest": "/api/$1.php"
+        },
+        {
+            "src": "/api/(.*)\\.php",
+            "dest": "/api/$1.php"
+        }
+    ]
 }
